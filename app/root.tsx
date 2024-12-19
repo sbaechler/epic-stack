@@ -1,4 +1,3 @@
-import { captureException } from '@sentry/react'
 import { useRef } from 'react'
 import {
 	data,

@@ -3,8 +3,6 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	data,
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
 	type MetaFunction,
 	Form,
 	Link,
@@ -44,7 +42,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	return {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	await requireAnonymous(request)
 	const formData = await request.formData()
 	checkHoneypot(formData)
