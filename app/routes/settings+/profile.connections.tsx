@@ -1,13 +1,13 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
-	json,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-	type SerializeFrom,
-	type HeadersFunction,
-} from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
+    json,
+    type LoaderFunctionArgs,
+    type ActionFunctionArgs,
+    type SerializeFrom,
+    type HeadersFunction,
+} from 'react-router';
+import { useFetcher, useLoaderData } from 'react-router';
 import { useState } from 'react'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'

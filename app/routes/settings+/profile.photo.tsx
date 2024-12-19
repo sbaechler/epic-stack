@@ -3,19 +3,14 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
-	json,
-	redirect,
-	unstable_createMemoryUploadHandler,
-	unstable_parseMultipartFormData,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-} from '@remix-run/node'
-import {
-	Form,
-	useActionData,
-	useLoaderData,
-	useNavigation,
-} from '@remix-run/react'
+    json,
+    redirect,
+    unstable_createMemoryUploadHandler,
+    unstable_parseMultipartFormData,
+    type LoaderFunctionArgs,
+    type ActionFunctionArgs,
+} from 'react-router';
+import { Form, useActionData, useLoaderData, useNavigation } from 'react-router';
 import { useState } from 'react'
 import { z } from 'zod'
 import { ErrorList } from '#app/components/forms.tsx'

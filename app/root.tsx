@@ -1,22 +1,22 @@
 import {
-	json,
-	type LoaderFunctionArgs,
-	type HeadersFunction,
-	type LinksFunction,
-	type MetaFunction,
-} from '@remix-run/node'
+    json,
+    type LoaderFunctionArgs,
+    type HeadersFunction,
+    type LinksFunction,
+    type MetaFunction,
+} from 'react-router';
 import {
-	Form,
-	Link,
-	Links,
-	Meta,
-	Outlet,
-	Scripts,
-	ScrollRestoration,
-	useLoaderData,
-	useMatches,
-	useSubmit,
-} from '@remix-run/react'
+    Form,
+    Link,
+    Links,
+    Meta,
+    Outlet,
+    Scripts,
+    ScrollRestoration,
+    useLoaderData,
+    useMatches,
+    useSubmit,
+} from 'react-router';
 import { withSentry } from '@sentry/remix'
 import { useRef } from 'react'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
