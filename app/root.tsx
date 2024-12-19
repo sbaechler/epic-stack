@@ -1,24 +1,22 @@
-import {
-    json,
-    type LoaderFunctionArgs,
-    type HeadersFunction,
-    type LinksFunction,
-    type MetaFunction,
-} from 'react-router';
-import {
-    Form,
-    Link,
-    Links,
-    Meta,
-    Outlet,
-    Scripts,
-    ScrollRestoration,
-    useLoaderData,
-    useMatches,
-    useSubmit,
-} from 'react-router';
 import { withSentry } from '@sentry/remix'
 import { useRef } from 'react'
+import {
+	data,
+	type LoaderFunctionArgs,
+	type HeadersFunction,
+	type LinksFunction,
+	type MetaFunction,
+
+	Form,
+	Link,
+	Links,
+	Meta,
+	Outlet,
+	Scripts,
+	ScrollRestoration,
+	useLoaderData,
+	useMatches,
+	useSubmit} from 'react-router'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import appleTouchIconAssetUrl from './assets/favicons/apple-touch-icon.png'
 import faviconAssetUrl from './assets/favicons/favicon.svg'
@@ -121,7 +119,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	const { toast, headers: toastHeaders } = await getToast(request)
 	const honeyProps = honeypot.getInputProps()
 
-	return json(
+	return data(
 		{
 			user,
 			requestInfo: {
@@ -146,10 +144,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-	const headers = {
-		'Server-Timing': loaderHeaders.get('Server-Timing') ?? '',
-	}
-	return headers
+	return loaderHeaders || {}
 }
 
 function Document({
@@ -161,7 +156,7 @@ function Document({
 	children: React.ReactNode
 	nonce: string
 	theme?: Theme
-	env?: Record<string, string>
+	env?: Record<string, string | undefined>
 }) {
 	const allowIndexing = ENV.ALLOW_INDEXING !== 'false'
 	return (
