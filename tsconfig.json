@@ -1,7 +1,8 @@
 {
-	"include": ["**/*.ts", "**/*.tsx"],
+	"include": ["**/*.ts", "**/*.tsx", ".react-router/types/**/*"],
 	"extends": ["@epic-web/config/typescript"],
 	"compilerOptions": {
+		"rootDirs": [".", "./.react-router/types"],
 		"paths": {
 			"#app/*": ["./app/*"],
 			"#tests/*": ["./tests/*"],
@@ -9,6 +10,7 @@
 				"./app/components/ui/icons/name.d.ts",
 				"./types/icon-name.d.ts"
 			]
-		}
+		},
+		"verbatimModuleSyntax": true
 	}
 }
