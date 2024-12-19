@@ -5,7 +5,7 @@ import { ErrorList } from '#app/components/forms.tsx'
 import { SearchBar } from '#app/components/search-bar.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
-import  { type Route } from './+types/index'
+import { type Route } from './+types/index'
 
 const UserSearchResultSchema = z.object({
 	id: z.string(),

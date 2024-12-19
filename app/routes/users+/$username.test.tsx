@@ -3,7 +3,7 @@
  */
 import { faker } from '@faker-js/faker'
 import { render, screen } from '@testing-library/react'
-import { createRoutesStub } from 'react-router';
+import { createRoutesStub } from 'react-router'
 import setCookieParser from 'set-cookie-parser'
 import { test } from 'vitest'
 import { loader as rootLoader } from '#app/root.tsx'

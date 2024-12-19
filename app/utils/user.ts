@@ -1,4 +1,4 @@
-import { type SerializeFrom , useRouteLoaderData } from 'react-router';
+import { type SerializeFrom, useRouteLoaderData } from 'react-router'
 import { type loader as rootLoader } from '#app/root.tsx'
 
 function isUser(user: any): user is SerializeFrom<typeof rootLoader>['user'] {

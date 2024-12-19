@@ -10,7 +10,7 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type Note, type NoteImage } from '@prisma/client'
 import { useState } from 'react'
-import { type SerializeFrom , Form, useActionData } from 'react-router';
+import { type SerializeFrom, Form, useActionData } from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'

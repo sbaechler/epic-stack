@@ -1,7 +1,7 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { useLoaderData } from 'react-router'
 import { prisma } from '#app/utils/db.server.ts'
-import  { type Route } from './+types/notes.$noteId_.edit'
+import { type Route } from './+types/notes.$noteId_.edit'
 import { NoteEditor, action } from './__note-editor.server.tsx'
 
 export { action }

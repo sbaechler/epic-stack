@@ -1,6 +1,6 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { prisma } from '#app/utils/db.server.ts'
-import  { type Route } from './+types/note-images.$imageId'
+import { type Route } from './+types/note-images.$imageId'
 
 export async function loader({ params }: Route.LoaderArgs) {
 	invariantResponse(params.imageId, 'Image ID is required', { status: 400 })

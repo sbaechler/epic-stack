@@ -1,7 +1,7 @@
 import { redirect } from 'react-router'
 import { requireUserId, logout } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import  { type Route } from './+types/me'
+import { type Route } from './+types/me'
 
 export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)

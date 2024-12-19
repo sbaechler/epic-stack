@@ -25,7 +25,7 @@ import {
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts'
-import  { type Route } from './+types/login'
+import { type Route } from './+types/login'
 import { handleNewSession } from './login.server.ts'
 
 export const handle: SEOHandle = {
