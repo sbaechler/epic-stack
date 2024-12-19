@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react'
-import { useHints } from '#app/utils/client-hints.tsx'
 import {
 	type ActionFunctionArgs,
 	redirect,
 	useFetcher,
 	useFetchers,
 } from 'react-router'
+import { useHints } from '#app/utils/client-hints.tsx'
 import { useRequestInfo } from '#app/utils/request-info.ts'
 import { setTheme } from '#app/utils/theme.server.ts'
 

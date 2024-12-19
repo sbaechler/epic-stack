@@ -1,14 +1,10 @@
-import {
-	type LoaderFunctionArgs,
-	Link,
-	NavLink,
-	Outlet,
-	useLoaderData,
-} from 'react-router'
 import { invariantResponse } from '@epic-web/invariant'
+import { Link, NavLink, Outlet, useLoaderData } from 'react-router'
 import { prisma } from '#app/utils/db.server.ts'
+import { useOptionalUser } from '#app/utils/user.js'
+import  { type Route } from './+types/notes'
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
 	const owner = await prisma.user.findFirst({
 		select: {
 			id: true,
@@ -19,10 +15,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
 				select: {
 					id: true,
 					title: true,
-					updatedAt: true,
-				},
-				orderBy: {
-					updatedAt: 'desc',
 				},
 			},
 		},

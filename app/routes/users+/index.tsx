@@ -1,16 +1,11 @@
-import {
-	data,
-	redirect,
-	type LoaderFunctionArgs,
-	Link,
-	useLoaderData,
-} from 'react-router'
+import { data, redirect, Link, useLoaderData } from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList } from '#app/components/forms.tsx'
 import { SearchBar } from '#app/components/search-bar.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { cn, getUserImgSrc, useDelayedIsPending } from '#app/utils/misc.tsx'
+import  { type Route } from './+types/index'
 
 const UserSearchResultSchema = z.object({
 	id: z.string(),
@@ -21,7 +16,7 @@ const UserSearchResultSchema = z.object({
 
 const UserSearchResultsSchema = z.array(UserSearchResultSchema)
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const searchTerm = new URL(request.url).searchParams.get('search')
 	if (searchTerm === '') {
 		return redirect('/users')

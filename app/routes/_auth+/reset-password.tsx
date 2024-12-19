@@ -2,11 +2,9 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
-	json,
+	data,
 	redirect,
 	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
-	type MetaFunction,
 	Form,
 	useActionData,
 	useLoaderData,
@@ -18,6 +16,7 @@ import { requireAnonymous, resetUserPassword } from '#app/utils/auth.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { PasswordAndConfirmPasswordSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
+import  { type Route } from './+types/reset-password'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -41,7 +40,7 @@ async function requireResetPasswordUsername(request: Request) {
 	return resetPasswordUsername
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const resetPasswordUsername = await requireResetPasswordUsername(request)
 	return { resetPasswordUsername }
 }

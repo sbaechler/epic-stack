@@ -4,7 +4,6 @@ import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	data,
 	redirect,
-	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
 	Form,
 	Link,
@@ -15,13 +14,13 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
-import { requireUserId } from '#app/utils/auth.server.ts'
+import { requireUserId , verifyUserPassword } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
-import { PasswordSchema } from '#app/utils/user-validation.ts'
-import { type BreadcrumbHandle } from './profile.tsx'
-import { verifyUserPassword } from '#app/utils/auth.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
+import { PasswordSchema } from '#app/utils/user-validation.ts'
+import  { type Route } from './+types/profile.password'
+import { type BreadcrumbHandle } from './profile.tsx'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="dots-horizontal">Password</Icon>,
@@ -33,7 +32,7 @@ const ChangePasswordForm = z.object({
 	newPassword: PasswordSchema,
 })
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	await requireUserId(request)
 	return {}
 }

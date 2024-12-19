@@ -1,5 +1,5 @@
-import { type LoaderFunctionArgs, useLoaderData } from 'react-router'
 import { invariantResponse } from '@epic-web/invariant'
+import { type LoaderFunctionArgs, useLoaderData } from 'react-router'
 import { prisma } from '#app/utils/db.server.ts'
 import { NoteEditor, action } from './__note-editor.server.tsx'
 

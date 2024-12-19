@@ -25,6 +25,7 @@ import {
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts'
+import  { type Route } from './+types/login'
 import { handleNewSession } from './login.server.ts'
 
 export const handle: SEOHandle = {
@@ -38,7 +39,7 @@ const LoginFormSchema = z.object({
 	remember: z.boolean().optional(),
 })
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	await requireAnonymous(request)
 	return {}
 }

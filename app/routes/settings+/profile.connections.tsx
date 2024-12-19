@@ -1,35 +1,21 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { useState } from 'react'
 import {
 	data,
-	type LoaderFunctionArgs,
 	type ActionFunctionArgs,
-	type SerializeFrom,
-	type HeadersFunction,
-	useFetcher,
+	Form,
 	useLoaderData,
 } from 'react-router'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipProvider,
-	TooltipTrigger,
-} from '#app/components/ui/tooltip.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { resolveConnectionData } from '#app/utils/connections.server.ts'
-import {
-	ProviderConnectionForm,
-	type ProviderName,
-	ProviderNameSchema,
-	providerIcons,
-	providerNames,
-} from '#app/utils/connections.tsx'
+import { ProviderNameSchema , type ProviderName } from '#app/utils/connections.tsx'
 import { prisma } from '#app/utils/db.server.ts'
+import { userCanDeleteConnections } from '#app/utils/permissions.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
+import  { type Route } from './+types/profile.connections'
 import { type BreadcrumbHandle } from './profile.tsx'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
@@ -37,21 +23,7 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 	getSitemapEntries: () => null,
 }
 
-async function userCanDeleteConnections(userId: string) {
-	const user = await prisma.user.findUnique({
-		select: {
-			password: { select: { userId: true } },
-			_count: { select: { connections: true } },
-		},
-		where: { id: userId },
-	})
-	// user can delete their connections if they have a password
-	if (user?.password) return true
-	// users have to have more than one remaining connection to delete one
-	return Boolean(user?._count.connections && user?._count.connections > 1)
-}
-
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)
 	const timings = makeTimings('profile connections loader')
 	const rawConnections = await prisma.connection.findMany({
