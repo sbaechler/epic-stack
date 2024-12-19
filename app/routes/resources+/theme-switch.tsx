@@ -11,7 +11,7 @@ import {
 	useRequestInfo,
 } from '#app/utils/request-info.ts'
 import { type Theme, setTheme } from '#app/utils/theme.server.ts'
-import { type Route } from './+types/theme-switch.tsx'
+import { type Route } from './+types/theme-switch.ts'
 
 const ThemeFormSchema = z.object({
 	theme: z.enum(['system', 'light', 'dark']),

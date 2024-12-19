@@ -27,7 +27,7 @@ import {
 import { prisma } from '#app/utils/db.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
-import { type Route } from './+types/profile.connections.tsx'
+import { type Route } from './+types/profile.connections.ts'
 import { type BreadcrumbHandle } from './profile.tsx'
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="link-2">Connections</Icon>,

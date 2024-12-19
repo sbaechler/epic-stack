@@ -3,7 +3,7 @@ import { useLoaderData } from 'react-router'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { type Route } from './+types/notes.$noteId_.edit'
+import { type Route } from './+types/notes.$noteId_.edit.ts'
 import { NoteEditor } from './__note-editor.tsx'
 
 export { action } from './__note-editor.server.tsx'
