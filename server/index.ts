@@ -1,6 +1,6 @@
 import crypto from 'node:crypto'
 import { createRequestHandler } from '@react-router/express'
-import Sentry from '@sentry/remix'
+import Sentry from '@sentry/node'
 import { ip as ipAddress } from 'address'
 import chalk from 'chalk'
 import closeWithGrace from 'close-with-grace'
