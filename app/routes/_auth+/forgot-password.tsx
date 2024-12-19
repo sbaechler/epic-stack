@@ -2,7 +2,14 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import * as E from '@react-email/components'
-import { json, redirect, type ActionFunctionArgs, type MetaFunction , Link, useFetcher } from 'react-router';
+import {
+	redirect,
+	type MetaFunction,
+	Link,
+	useFetcher,
+	data,
+} from 'react-router'
+import type { Route } from './+types/forgot-password'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -22,7 +29,7 @@ const ForgotPasswordSchema = z.object({
 	usernameOrEmail: z.union([EmailSchema, UsernameSchema]),
 })
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 	checkHoneypot(formData)
 	const submission = await parseWithZod(formData, {
@@ -48,7 +55,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		async: true,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)
@@ -78,7 +85,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	if (response.status === 'success') {
 		return redirect(redirectTo.toString())
 	} else {
-		return json(
+		return data(
 			{ result: submission.reply({ formErrors: [response.error.message] }) },
 			{ status: 500 },
 		)

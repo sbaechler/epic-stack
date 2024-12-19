@@ -2,7 +2,14 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import * as E from '@react-email/components'
-import { json, redirect, type ActionFunctionArgs, type MetaFunction , Form, useActionData, useSearchParams } from 'react-router';
+import {
+	redirect,
+	type MetaFunction,
+	Form,
+	useActionData,
+	useSearchParams,
+	data,
+} from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -27,7 +34,7 @@ const SignupSchema = z.object({
 	email: EmailSchema,
 })
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 
 	checkHoneypot(formData)
@@ -50,7 +57,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		async: true,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)
@@ -72,7 +79,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	if (response.status === 'success') {
 		return redirect(redirectTo.toString())
 	} else {
-		return json(
+		return data(
 			{
 				result: submission.reply({ formErrors: [response.error.message] }),
 			},

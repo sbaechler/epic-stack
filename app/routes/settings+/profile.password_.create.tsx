@@ -1,8 +1,15 @@
+import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import {
+	redirect,
+	type Route,
+	Form,
+	Link,
+	useActionData,
+	data,
+} from 'react-router'
+import { ErrorList, Field } from '#app/components/forms.tsx'
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
-import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { json, redirect, type LoaderFunctionArgs, type ActionFunctionArgs , Form, Link, useActionData } from 'react-router';
-import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
@@ -29,13 +36,13 @@ async function requireNoPassword(userId: string) {
 	}
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)
 	await requireNoPassword(userId)
-	return json({})
+	return {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	await requireNoPassword(userId)
 	const formData = await request.formData()
@@ -44,7 +51,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		schema: CreatePasswordForm,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{
 				result: submission.reply({
 					hideFields: ['password', 'confirmPassword'],

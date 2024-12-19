@@ -1,5 +1,5 @@
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { json, type LoaderFunctionArgs, type ActionFunctionArgs , useFetcher } from 'react-router';
+import { type Route, useFetcher } from 'react-router'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireRecentVerification } from '#app/routes/_auth+/verify.server.ts'
@@ -15,12 +15,12 @@ export const handle: BreadcrumbHandle & SEOHandle = {
 	getSitemapEntries: () => null,
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	await requireRecentVerification(request)
-	return json({})
+	return {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	await requireRecentVerification(request)
 	const userId = await requireUserId(request)
 	await prisma.verification.delete({
