@@ -1,10 +1,12 @@
+import {
+	type LoaderFunctionArgs,
+	Link,
+	NavLink,
+	Outlet,
+	useLoaderData,
+} from 'react-router'
 import { invariantResponse } from '@epic-web/invariant'
-import { json, type LoaderFunctionArgs , Link, NavLink, Outlet, useLoaderData } from 'react-router';
-import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
-import { useOptionalUser } from '#app/utils/user.ts'
 
 export async function loader({ params }: LoaderFunctionArgs) {
 	const owner = await prisma.user.findFirst({
@@ -13,14 +15,25 @@ export async function loader({ params }: LoaderFunctionArgs) {
 			name: true,
 			username: true,
 			image: { select: { id: true } },
-			notes: { select: { id: true, title: true } },
+			notes: {
+				select: {
+					id: true,
+					title: true,
+					updatedAt: true,
+				},
+				orderBy: {
+					updatedAt: 'desc',
+				},
+			},
 		},
-		where: { username: params.username },
+		where: {
+			username: params.username,
+		},
 	})
 
 	invariantResponse(owner, 'Owner not found', { status: 404 })
 
-	return json({ owner })
+	return { owner }
 }
 
 export default function NotesRoute() {

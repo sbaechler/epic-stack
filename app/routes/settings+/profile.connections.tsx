@@ -2,12 +2,14 @@ import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { useState } from 'react'
 import {
-    json,
-    type LoaderFunctionArgs,
-    type ActionFunctionArgs,
-    type SerializeFrom,
-    type HeadersFunction,
- useFetcher, useLoaderData } from 'react-router';
+	data,
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	type SerializeFrom,
+	type HeadersFunction,
+	useFetcher,
+	useLoaderData,
+} from 'react-router'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import {
@@ -80,7 +82,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		})
 	}
 
-	return json(
+	return data(
 		{
 			connections,
 			canDeleteConnections: await userCanDeleteConnections(userId),
@@ -90,10 +92,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-	const headers = {
-		'Server-Timing': loaderHeaders.get('Server-Timing') ?? '',
-	}
-	return headers
+	return loaderHeaders || {}
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -119,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		title: 'Deleted',
 		description: 'Your connection has been deleted.',
 	})
-	return json({ status: 'success' } as const, { headers: toastHeaders })
+	return data({ status: 'success' } as const, { headers: toastHeaders })
 }
 
 export default function Connections() {

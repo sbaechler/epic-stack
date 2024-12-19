@@ -1,15 +1,13 @@
+import { type LoaderFunctionArgs, useLoaderData } from 'react-router'
 import { invariantResponse } from '@epic-web/invariant'
-import { json, type LoaderFunctionArgs , useLoaderData } from 'react-router';
-import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
-import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
-import { NoteEditor } from './__note-editor.tsx'
+import { NoteEditor, action } from './__note-editor.server.tsx'
 
-export { action } from './__note-editor.server.tsx'
+export { action }
 
-export async function loader({ params, request }: LoaderFunctionArgs) {
-	const userId = await requireUserId(request)
-	const note = await prisma.note.findFirst({
+export async function loader({ params }: LoaderFunctionArgs) {
+	const note = await prisma.note.findUnique({
+		where: { id: params.noteId },
 		select: {
 			id: true,
 			title: true,
@@ -21,29 +19,12 @@ export async function loader({ params, request }: LoaderFunctionArgs) {
 				},
 			},
 		},
-		where: {
-			id: params.noteId,
-			ownerId: userId,
-		},
 	})
-	invariantResponse(note, 'Not found', { status: 404 })
-	return json({ note: note })
+	invariantResponse(note, 'Note not found', { status: 404 })
+	return { note }
 }
 
 export default function NoteEdit() {
 	const data = useLoaderData<typeof loader>()
-
 	return <NoteEditor note={data.note} />
-}
-
-export function ErrorBoundary() {
-	return (
-		<GeneralErrorBoundary
-			statusHandlers={{
-				404: ({ params }) => (
-					<p>No note with the id "{params.noteId}" exists</p>
-				),
-			}}
-		/>
-	)
 }

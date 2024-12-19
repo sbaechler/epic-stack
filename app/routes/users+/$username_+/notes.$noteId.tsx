@@ -2,7 +2,17 @@ import { getFormProps, useForm } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import { formatDistanceToNow } from 'date-fns'
-import { json, type LoaderFunctionArgs, type ActionFunctionArgs , Form, Link, useActionData, useLoaderData, type MetaFunction } from 'react-router';
+import {
+	json,
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	Form,
+	Link,
+	useActionData,
+	useLoaderData,
+	type MetaFunction,
+	data,
+} from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { floatingToolbarClassName } from '#app/components/floating-toolbar.tsx'
@@ -41,10 +51,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 	const date = new Date(note.updatedAt)
 	const timeAgo = formatDistanceToNow(date)
 
-	return json({
+	return {
 		note,
 		timeAgo,
-	})
+	}
 }
 
 const DeleteFormSchema = z.object({
@@ -59,7 +69,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		schema: DeleteFormSchema,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)
