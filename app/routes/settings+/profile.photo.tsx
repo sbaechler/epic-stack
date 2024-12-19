@@ -4,13 +4,15 @@ import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import { useState } from 'react'
 import {
-    json,
-    redirect,
-    unstable_createMemoryUploadHandler,
-    unstable_parseMultipartFormData,
-    type LoaderFunctionArgs,
-    type ActionFunctionArgs,
- Form, useActionData, useLoaderData, useNavigation } from 'react-router';
+	redirect,
+	unstable_createMemoryUploadHandler,
+	unstable_parseMultipartFormData,
+	data,
+	Form,
+	useActionData,
+	useLoaderData,
+	useNavigation,
+} from 'react-router'
 import { z } from 'zod'
 import { ErrorList } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
@@ -24,7 +26,7 @@ import {
 	useIsPending,
 } from '#app/utils/misc.tsx'
 import { type BreadcrumbHandle } from './profile.tsx'
-
+import { type Route } from './+types/profile.photo.tsx'
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="avatar">Photo</Icon>,
 	getSitemapEntries: () => null,
@@ -52,7 +54,7 @@ const PhotoFormSchema = z.discriminatedUnion('intent', [
 	NewImageSchema,
 ])
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)
 	const user = await prisma.user.findUnique({
 		where: { id: userId },
@@ -64,10 +66,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		},
 	})
 	invariantResponse(user, 'User not found', { status: 404 })
-	return json({ user })
+	return { user }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await unstable_parseMultipartFormData(
 		request,
@@ -90,7 +92,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	})
 
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)

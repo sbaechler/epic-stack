@@ -1,8 +1,11 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { Link, NavLink, Outlet, useLoaderData } from 'react-router'
+import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
+import { Icon } from '#app/components/ui/icon.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { useOptionalUser } from '#app/utils/user.js'
-import  { type Route } from './+types/notes'
+import { cn, getUserImgSrc } from '#app/utils/misc.tsx'
+import { useOptionalUser } from '#app/utils/user.ts'
+import { type Route } from './+types/notes'
 
 export async function loader({ params }: Route.LoaderArgs) {
 	const owner = await prisma.user.findFirst({

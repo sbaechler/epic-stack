@@ -1,11 +1,11 @@
-import { redirect, type Route } from 'react-router'
+import { redirect } from 'react-router'
 import { z } from 'zod'
 import { cache } from '#app/utils/cache.server.ts'
 import {
 	getInstanceInfo,
 	getInternalInstanceDomain,
 } from '#app/utils/litefs.server'
-
+import { type Route } from './+types/cache_.sqlite.ts'
 export async function updatePrimaryCacheValue({
 	key,
 	cacheValue,

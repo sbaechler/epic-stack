@@ -30,12 +30,13 @@ import {
 } from '#app/utils/litefs.server.ts'
 import { useDebounce, useDoubleCheck } from '#app/utils/misc.tsx'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
+import { type Route } from './+types/cache.tsx'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	await requireUserWithRole(request, 'admin')
 	const searchParams = new URL(request.url).searchParams
 	const query = searchParams.get('query')
@@ -60,7 +61,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	return { cacheKeys, instance, instances, currentInstanceInfo }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	await requireUserWithRole(request, 'admin')
 	const formData = await request.formData()
 	const key = formData.get('cacheKey')
@@ -154,31 +155,29 @@ export default function CacheAdminRoute() {
 						defaultValue={instance}
 						title="Select instance"
 					>
-						{Object.entries(data.instances).map(
-							([inst, region]: [string, string]) => (
-								<option key={inst} value={inst}>
-									{[
-										inst,
-										`(${region})`,
-										inst === data.currentInstanceInfo.currentInstance
-											? '(current)'
-											: '',
-										inst === data.currentInstanceInfo.primaryInstance
-											? ' (primary)'
-											: '',
-									]
-										.filter(Boolean)
-										.join(' ')}
-								</option>
-							),
-						)}
+						{Object.entries(data.instances).map(([inst, region]) => (
+							<option key={inst} value={inst}>
+								{[
+									inst,
+									`(${region})`,
+									inst === data.currentInstanceInfo.currentInstance
+										? '(current)'
+										: '',
+									inst === data.currentInstanceInfo.primaryInstance
+										? ' (primary)'
+										: '',
+								]
+									.filter(Boolean)
+									.join(' ')}
+							</option>
+						))}
 					</select>
 				</div>
 			</Form>
 			<Spacer size="2xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">LRU Cache:</h2>
-				{data.cacheKeys.lru.map((key: string) => (
+				{data.cacheKeys.lru.map((key) => (
 					<CacheKeyRow
 						key={key}
 						cacheKey={key}
@@ -190,7 +189,7 @@ export default function CacheAdminRoute() {
 			<Spacer size="3xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">SQLite Cache:</h2>
-				{data.cacheKeys.sqlite.map((key: string) => (
+				{data.cacheKeys.sqlite.map((key) => (
 					<CacheKeyRow
 						key={key}
 						cacheKey={key}

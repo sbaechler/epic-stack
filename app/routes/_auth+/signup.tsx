@@ -25,6 +25,7 @@ import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
 import { prepareVerification } from './verify.server.ts'
+import { Route } from './+types/signup.ts'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,

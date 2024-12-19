@@ -13,6 +13,7 @@ import { prisma } from '#app/utils/db.server.ts'
 import { generateTOTP } from '#app/utils/totp.server.ts'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
 import { twoFAVerifyVerificationType } from './profile.two-factor.verify.tsx'
+import { type Route } from './+types/profile.two-factor.index.tsx'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,

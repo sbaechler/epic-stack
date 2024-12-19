@@ -7,6 +7,7 @@ import {
 	Form,
 	useActionData,
 	useLoaderData,
+	type MetaFunction,
 } from 'react-router'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList, Field } from '#app/components/forms.tsx'
@@ -15,7 +16,7 @@ import { requireAnonymous, resetUserPassword } from '#app/utils/auth.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { PasswordAndConfirmPasswordSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
-import  { type Route } from './+types/reset-password'
+import { type Route } from './+types/reset-password'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,

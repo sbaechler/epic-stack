@@ -6,7 +6,6 @@ import {
 	type HeadersFunction,
 	type LinksFunction,
 	type MetaFunction,
-
 	Form,
 	Link,
 	Links,
@@ -16,7 +15,13 @@ import {
 	ScrollRestoration,
 	useLoaderData,
 	useMatches,
-	useSubmit} from 'react-router'
+	useSubmit,
+} from 'react-router'
+import {
+	ThemeSwitch,
+	useOptionalTheme,
+	useTheme,
+} from './routes/resources+/theme-switch.tsx'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import appleTouchIconAssetUrl from './assets/favicons/apple-touch-icon.png'
 import faviconAssetUrl from './assets/favicons/favicon.svg'
@@ -34,11 +39,7 @@ import {
 } from './components/ui/dropdown-menu.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
-import {
-	ThemeSwitch,
-	useOptionalTheme,
-	useTheme,
-} from './routes/resources+/theme-switch.tsx'
+
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
 import { getUserId, logout } from './utils/auth.server.ts'
 import { ClientHintCheck, getHints } from './utils/client-hints.tsx'
@@ -317,7 +318,7 @@ function UserDropdown() {
 						// this prevents the menu from closing before the form submission is completed
 						onSelect={(event) => {
 							event.preventDefault()
-							submit(formRef.current)
+							void submit(formRef.current)
 						}}
 					>
 						<Form action="/logout" method="POST" ref={formRef}>
@@ -335,17 +336,3 @@ function UserDropdown() {
 // this is a last resort error boundary. There's not much useful information we
 // can offer at this level.
 export const ErrorBoundary = GeneralErrorBoundary
-
-export async function handleRequest(
-	request: Request,
-	responseStatusCode: number,
-	responseHeaders: Headers,
-	routerContext: any,
-	loadContext: any,
-) {
-	const body = await getStream()
-	return new Response(body, {
-		headers: responseHeaders,
-		status: responseStatusCode,
-	})
-}

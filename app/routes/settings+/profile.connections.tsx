@@ -1,24 +1,51 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { data, Form, useLoaderData } from 'react-router'
+import {
+	type HeadersFunction,
+	useFetcher,
+	useLoaderData,
+	data,
+} from 'react-router'
+import { useState } from 'react'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from '#app/components/ui/tooltip.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { resolveConnectionData } from '#app/utils/connections.server.ts'
 import {
-	ProviderNameSchema,
+	ProviderConnectionForm,
 	type ProviderName,
+	ProviderNameSchema,
+	providerIcons,
+	providerNames,
 } from '#app/utils/connections.tsx'
 import { prisma } from '#app/utils/db.server.ts'
-import { userCanDeleteConnections } from '#app/utils/permissions.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
-import  { type Route } from './+types/profile.connections'
 import { type BreadcrumbHandle } from './profile.tsx'
-
+import { type Route } from './+types/profile.connections.tsx'
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="link-2">Connections</Icon>,
 	getSitemapEntries: () => null,
+}
+
+async function userCanDeleteConnections(userId: string) {
+	const user = await prisma.user.findUnique({
+		select: {
+			password: { select: { userId: true } },
+			_count: { select: { connections: true } },
+		},
+		where: { id: userId },
+	})
+	// user can delete their connections if they have a password
+	if (user?.password) return true
+	// users have to have more than one remaining connection to delete one
+	return Boolean(user?._count.connections && user?._count.connections > 1)
 }
 
 export async function loader({ request }: Route.LoaderArgs) {
@@ -62,7 +89,10 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-	return loaderHeaders || {}
+	const headers = {
+		'Server-Timing': loaderHeaders.get('Server-Timing') ?? '',
+	}
+	return headers
 }
 
 export async function action({ request }: Route.ActionArgs) {

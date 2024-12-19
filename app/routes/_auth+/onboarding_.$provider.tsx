@@ -6,12 +6,15 @@ import {
 } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import {
-    redirect,
-    json,
-    type ActionFunctionArgs,
-    type LoaderFunctionArgs,
-    type MetaFunction,
- type Params, Form, useActionData, useLoaderData, useSearchParams } from 'react-router';
+	redirect,
+	data,
+	type MetaFunction,
+	type Params,
+	Form,
+	useActionData,
+	useLoaderData,
+	useSearchParams,
+} from 'react-router'
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { z } from 'zod'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
@@ -32,6 +35,7 @@ import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
 import { onboardingEmailSessionKey } from './onboarding'
+import { Route } from './+types/onboarding_.$provider.tsx'
 
 export const providerIdKey = 'providerId'
 export const prefilledProfileKey = 'prefilledProfile'
@@ -75,7 +79,7 @@ async function requireData({
 	}
 }
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
 	const { email } = await requireData({ request, params })
 	const connectionSession = await connectionSessionStorage.getSession(
 		request.headers.get('cookie'),
@@ -88,7 +92,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	const formError = connectionSession.get(authenticator.sessionErrorKey)
 	const hasError = typeof formError === 'string'
 
-	return json({
+	return {
 		email,
 		status: 'idle',
 		submission: {
@@ -96,10 +100,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			initialValue: prefilledProfile ?? {},
 			error: { '': hasError ? [formError] : [] },
 		} as SubmissionResult,
-	})
+	}
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
+export async function action({ request, params }: Route.ActionArgs) {
 	const { email, providerId, providerName } = await requireData({
 		request,
 		params,
@@ -136,7 +140,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	})
 
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)
