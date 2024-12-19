@@ -17,11 +17,6 @@ import {
 	useMatches,
 	useSubmit,
 } from 'react-router'
-import {
-	ThemeSwitch,
-	useOptionalTheme,
-	useTheme,
-} from './routes/resources+/theme-switch.tsx'
 import { HoneypotProvider } from 'remix-utils/honeypot/react'
 import appleTouchIconAssetUrl from './assets/favicons/apple-touch-icon.png'
 import faviconAssetUrl from './assets/favicons/favicon.svg'
@@ -39,6 +34,11 @@ import {
 } from './components/ui/dropdown-menu.tsx'
 import { Icon, href as iconsHref } from './components/ui/icon.tsx'
 import { EpicToaster } from './components/ui/sonner.tsx'
+import {
+	ThemeSwitch,
+	useOptionalTheme,
+	useTheme,
+} from './routes/resources+/theme-switch.tsx'
 
 import tailwindStyleSheetUrl from './styles/tailwind.css?url'
 import { getUserId, logout } from './utils/auth.server.ts'

@@ -2,7 +2,7 @@ import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { type Link, useFetcher, useLoaderData } from 'react-router'
+import { type Link, useFetcher, useLoaderData, data } from 'react-router'
 import { z } from 'zod'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
@@ -14,8 +14,8 @@ import { getUserImgSrc, useDoubleCheck } from '#app/utils/misc.tsx'
 import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
-import { twoFAVerificationType } from './profile.two-factor.tsx'
 import { type Route } from './+types/profile.index.tsx'
+import { twoFAVerificationType } from './profile.two-factor.tsx'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
@@ -190,7 +190,10 @@ async function profileUpdateAction({ userId, formData }: ProfileActionArgs) {
 		}),
 	})
 	if (submission.status !== 'success') {
-		return { result: submission.reply() }
+		return data(
+			{ result: submission.reply() },
+			{ status: submission.status === 'error' ? 400 : 200 },
+		)
 	}
 
 	const data = submission.value

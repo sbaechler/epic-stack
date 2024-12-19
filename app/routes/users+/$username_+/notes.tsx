@@ -14,16 +14,9 @@ export async function loader({ params }: Route.LoaderArgs) {
 			name: true,
 			username: true,
 			image: { select: { id: true } },
-			notes: {
-				select: {
-					id: true,
-					title: true,
-				},
-			},
+			notes: { select: { id: true, title: true } },
 		},
-		where: {
-			username: params.username,
-		},
+		where: { username: params.username },
 	})
 
 	invariantResponse(owner, 'Owner not found', { status: 404 })

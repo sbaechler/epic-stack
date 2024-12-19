@@ -1,12 +1,12 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
+import { useState } from 'react'
 import {
 	type HeadersFunction,
 	useFetcher,
 	useLoaderData,
 	data,
 } from 'react-router'
-import { useState } from 'react'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import {
@@ -27,8 +27,8 @@ import {
 import { prisma } from '#app/utils/db.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
-import { type BreadcrumbHandle } from './profile.tsx'
 import { type Route } from './+types/profile.connections.tsx'
+import { type BreadcrumbHandle } from './profile.tsx'
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="link-2">Connections</Icon>,
 	getSitemapEntries: () => null,

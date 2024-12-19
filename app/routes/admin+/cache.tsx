@@ -241,33 +241,13 @@ function CacheKeyRow({
 }
 
 export function ErrorBoundary() {
-	const error = useRouteError()
-
-	if (isRouteErrorResponse(error)) {
-		return (
-			<div className="container">
-				<h1>
-					{error.status} {error.statusText}
-				</h1>
-				<p>{error.data}</p>
-			</div>
-		)
-	}
-
-	if (error instanceof Error) {
-		return (
-			<div className="container">
-				<h1>Error</h1>
-				<p>{error.message}</p>
-				<p>The stack trace is:</p>
-				<pre>{error.stack}</pre>
-			</div>
-		)
-	}
-
 	return (
-		<div className="container">
-			<h1>Unknown Error</h1>
-		</div>
+		<GeneralErrorBoundary
+			statusHandlers={{
+				403: ({ error }) => (
+					<p>You are not allowed to do that: {error?.data.message}</p>
+				),
+			}}
+		/>
 	)
 }

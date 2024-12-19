@@ -11,9 +11,9 @@ import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { generateTOTP } from '#app/utils/totp.server.ts'
+import { type Route } from './+types/profile.two-factor.index.tsx'
 import { twoFAVerificationType } from './profile.two-factor.tsx'
 import { twoFAVerifyVerificationType } from './profile.two-factor.verify.tsx'
-import { type Route } from './+types/profile.two-factor.index.tsx'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
