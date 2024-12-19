@@ -1,11 +1,12 @@
 import { invariantResponse } from '@epic-web/invariant'
-import { type LoaderFunctionArgs, useLoaderData } from 'react-router'
+import { useLoaderData } from 'react-router'
 import { prisma } from '#app/utils/db.server.ts'
+import  { type Route } from './+types/notes.$noteId_.edit'
 import { NoteEditor, action } from './__note-editor.server.tsx'
 
 export { action }
 
-export async function loader({ params }: LoaderFunctionArgs) {
+export async function loader({ params }: Route.LoaderArgs) {
 	const note = await prisma.note.findUnique({
 		where: { id: params.noteId },
 		select: {

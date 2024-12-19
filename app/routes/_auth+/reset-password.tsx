@@ -4,7 +4,6 @@ import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
 	data,
 	redirect,
-	type ActionFunctionArgs,
 	Form,
 	useActionData,
 	useLoaderData,
@@ -45,7 +44,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	return { resetPasswordUsername }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const resetPasswordUsername = await requireResetPasswordUsername(request)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, {

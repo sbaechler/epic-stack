@@ -144,7 +144,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export const headers: HeadersFunction = ({ loaderHeaders }) => {
-	return loaderHeaders || {}
+	const headers = {
+		'Server-Timing': loaderHeaders.get('Server-Timing') ?? '',
+	}
+	return headers
 }
 
 function Document({
@@ -332,3 +335,17 @@ function UserDropdown() {
 // this is a last resort error boundary. There's not much useful information we
 // can offer at this level.
 export const ErrorBoundary = GeneralErrorBoundary
+
+export async function handleRequest(
+	request: Request,
+	responseStatusCode: number,
+	responseHeaders: Headers,
+	routerContext: any,
+	loadContext: any,
+) {
+	const body = await getStream()
+	return new Response(body, {
+		headers: responseHeaders,
+		status: responseStatusCode,
+	})
+}

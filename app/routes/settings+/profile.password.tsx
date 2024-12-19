@@ -1,20 +1,13 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import {
-	data,
-	redirect,
-	type ActionFunctionArgs,
-	Form,
-	Link,
-	useActionData,
-} from 'react-router'
+import { data, redirect, Form, Link, useActionData } from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
-import { requireUserId , verifyUserPassword } from '#app/utils/auth.server.ts'
+import { requireUserId, verifyUserPassword } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
@@ -37,7 +30,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 	return {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, {

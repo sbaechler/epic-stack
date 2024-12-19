@@ -3,15 +3,12 @@ import { parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
 import { formatDistanceToNow } from 'date-fns'
 import {
-	json,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
+	data,
 	Form,
 	Link,
 	useActionData,
 	useLoaderData,
 	type MetaFunction,
-	data,
 } from 'react-router'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -63,7 +60,7 @@ const DeleteFormSchema = z.object({
 	noteId: z.string(),
 })
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, {

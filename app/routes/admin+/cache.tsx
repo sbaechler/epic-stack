@@ -1,6 +1,18 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import { json, redirect, type LoaderFunctionArgs, type ActionFunctionArgs , Form, Link, useFetcher, useLoaderData, useSearchParams, useSubmit } from 'react-router';
+import {
+	redirect,
+	type LoaderFunctionArgs,
+	type ActionFunctionArgs,
+	Form,
+	Link,
+	useFetcher,
+	useLoaderData,
+	useSearchParams,
+	useSubmit,
+	useRouteError,
+	isRouteErrorResponse,
+} from 'react-router'
 import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
@@ -45,7 +57,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	} else {
 		cacheKeys = await getAllCacheKeys(limit)
 	}
-	return json({ cacheKeys, instance, instances, currentInstanceInfo })
+	return { cacheKeys, instance, instances, currentInstanceInfo }
 }
 
 export async function action({ request }: ActionFunctionArgs) {
@@ -74,7 +86,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			throw new Error(`Unknown cache type: ${type}`)
 		}
 	}
-	return json({ success: true })
+	return { success: true }
 }
 
 export default function CacheAdminRoute() {
@@ -86,7 +98,7 @@ export default function CacheAdminRoute() {
 	const instance = searchParams.get('instance') ?? data.instance
 
 	const handleFormChange = useDebounce((form: HTMLFormElement) => {
-		submit(form)
+		void submit(form)
 	}, 400)
 
 	return (
@@ -137,30 +149,36 @@ export default function CacheAdminRoute() {
 							placeholder: 'results limit',
 						}}
 					/>
-					<select name="instance" defaultValue={instance}>
-						{Object.entries(data.instances).map(([inst, region]) => (
-							<option key={inst} value={inst}>
-								{[
-									inst,
-									`(${region})`,
-									inst === data.currentInstanceInfo.currentInstance
-										? '(current)'
-										: '',
-									inst === data.currentInstanceInfo.primaryInstance
-										? ' (primary)'
-										: '',
-								]
-									.filter(Boolean)
-									.join(' ')}
-							</option>
-						))}
+					<select
+						name="instance"
+						defaultValue={instance}
+						title="Select instance"
+					>
+						{Object.entries(data.instances).map(
+							([inst, region]: [string, string]) => (
+								<option key={inst} value={inst}>
+									{[
+										inst,
+										`(${region})`,
+										inst === data.currentInstanceInfo.currentInstance
+											? '(current)'
+											: '',
+										inst === data.currentInstanceInfo.primaryInstance
+											? ' (primary)'
+											: '',
+									]
+										.filter(Boolean)
+										.join(' ')}
+								</option>
+							),
+						)}
 					</select>
 				</div>
 			</Form>
 			<Spacer size="2xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">LRU Cache:</h2>
-				{data.cacheKeys.lru.map((key) => (
+				{data.cacheKeys.lru.map((key: string) => (
 					<CacheKeyRow
 						key={key}
 						cacheKey={key}
@@ -172,7 +190,7 @@ export default function CacheAdminRoute() {
 			<Spacer size="3xs" />
 			<div className="flex flex-col gap-4">
 				<h2 className="text-h2">SQLite Cache:</h2>
-				{data.cacheKeys.sqlite.map((key) => (
+				{data.cacheKeys.sqlite.map((key: string) => (
 					<CacheKeyRow
 						key={key}
 						cacheKey={key}
@@ -224,13 +242,33 @@ function CacheKeyRow({
 }
 
 export function ErrorBoundary() {
+	const error = useRouteError()
+
+	if (isRouteErrorResponse(error)) {
+		return (
+			<div className="container">
+				<h1>
+					{error.status} {error.statusText}
+				</h1>
+				<p>{error.data}</p>
+			</div>
+		)
+	}
+
+	if (error instanceof Error) {
+		return (
+			<div className="container">
+				<h1>Error</h1>
+				<p>{error.message}</p>
+				<p>The stack trace is:</p>
+				<pre>{error.stack}</pre>
+			</div>
+		)
+	}
+
 	return (
-		<GeneralErrorBoundary
-			statusHandlers={{
-				403: ({ error }) => (
-					<p>You are not allowed to do that: {error?.data.message}</p>
-				),
-			}}
-		/>
+		<div className="container">
+			<h1>Unknown Error</h1>
+		</div>
 	)
 }

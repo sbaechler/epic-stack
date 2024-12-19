@@ -1,16 +1,14 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import {
-	data,
-	type ActionFunctionArgs,
-	Form,
-	useLoaderData,
-} from 'react-router'
+import { data, Form, useLoaderData } from 'react-router'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import { requireUserId } from '#app/utils/auth.server.ts'
 import { resolveConnectionData } from '#app/utils/connections.server.ts'
-import { ProviderNameSchema , type ProviderName } from '#app/utils/connections.tsx'
+import {
+	ProviderNameSchema,
+	type ProviderName,
+} from '#app/utils/connections.tsx'
 import { prisma } from '#app/utils/db.server.ts'
 import { userCanDeleteConnections } from '#app/utils/permissions.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
@@ -67,7 +65,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	return loaderHeaders || {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	invariantResponse(
