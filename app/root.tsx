@@ -1,4 +1,4 @@
-import { withSentry } from '@sentry/remix'
+import { captureException } from '@sentry/react'
 import { useRef } from 'react'
 import {
 	data,
@@ -270,7 +270,7 @@ function AppWithProviders() {
 	)
 }
 
-export default withSentry(AppWithProviders)
+export default AppWithProviders
 
 function UserDropdown() {
 	const user = useUser()

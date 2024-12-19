@@ -1,7 +1,7 @@
 import { PassThrough } from 'node:stream'
 import { createReadableStreamFromReadable } from '@react-router/node'
 
-import * as Sentry from '@sentry/remix'
+import * as Sentry from '@sentry/node'
 import chalk from 'chalk'
 import { isbot } from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
@@ -103,13 +103,11 @@ export function handleError(
 		return
 	}
 	if (error instanceof Error) {
+		// TODO: This is a temporary solution to capture errors in the server.
+		// Until Sentry fully supports React Router Framework.
+		// https://docs.sentry.io/platforms/javascript/guides/react-router/
 		console.error(chalk.red(error.stack))
-		void Sentry.captureRemixServerException(
-			error,
-			'remix.server',
-			request,
-			true,
-		)
+		void Sentry.captureException(error)
 	} else {
 		console.error(error)
 		Sentry.captureException(error)
