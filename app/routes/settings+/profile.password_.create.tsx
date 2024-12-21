@@ -1,13 +1,7 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import {
-	json,
-	redirect,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-} from '@remix-run/node'
-import { Form, Link, useActionData } from '@remix-run/react'
+import { redirect, Form, Link, useActionData, data } from 'react-router'
 import { ErrorList, Field } from '#app/components/forms.tsx'
 import { Button } from '#app/components/ui/button.tsx'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -16,6 +10,7 @@ import { getPasswordHash, requireUserId } from '#app/utils/auth.server.ts'
 import { prisma } from '#app/utils/db.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { PasswordAndConfirmPasswordSchema } from '#app/utils/user-validation.ts'
+import { type Route } from './+types/profile.password_.create.ts'
 import { type BreadcrumbHandle } from './profile.tsx'
 
 export const handle: BreadcrumbHandle & SEOHandle = {
@@ -35,13 +30,13 @@ async function requireNoPassword(userId: string) {
 	}
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)
 	await requireNoPassword(userId)
-	return json({})
+	return {}
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	await requireNoPassword(userId)
 	const formData = await request.formData()
@@ -50,7 +45,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		schema: CreatePasswordForm,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{
 				result: submission.reply({
 					hideFields: ['password', 'confirmPassword'],

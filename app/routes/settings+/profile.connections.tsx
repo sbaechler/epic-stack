@@ -1,14 +1,12 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
-import {
-	json,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-	type SerializeFrom,
-	type HeadersFunction,
-} from '@remix-run/node'
-import { useFetcher, useLoaderData } from '@remix-run/react'
 import { useState } from 'react'
+import {
+	type HeadersFunction,
+	useFetcher,
+	useLoaderData,
+	data,
+} from 'react-router'
 import { Icon } from '#app/components/ui/icon.tsx'
 import { StatusButton } from '#app/components/ui/status-button.tsx'
 import {
@@ -29,8 +27,8 @@ import {
 import { prisma } from '#app/utils/db.server.ts'
 import { makeTimings } from '#app/utils/timing.server.ts'
 import { createToastHeaders } from '#app/utils/toast.server.ts'
+import { type Route } from './+types/profile.connections.ts'
 import { type BreadcrumbHandle } from './profile.tsx'
-
 export const handle: BreadcrumbHandle & SEOHandle = {
 	breadcrumb: <Icon name="link-2">Connections</Icon>,
 	getSitemapEntries: () => null,
@@ -50,7 +48,7 @@ async function userCanDeleteConnections(userId: string) {
 	return Boolean(user?._count.connections && user?._count.connections > 1)
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const userId = await requireUserId(request)
 	const timings = makeTimings('profile connections loader')
 	const rawConnections = await prisma.connection.findMany({
@@ -81,7 +79,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		})
 	}
 
-	return json(
+	return data(
 		{
 			connections,
 			canDeleteConnections: await userCanDeleteConnections(userId),
@@ -97,7 +95,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 	return headers
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const userId = await requireUserId(request)
 	const formData = await request.formData()
 	invariantResponse(
@@ -120,7 +118,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		title: 'Deleted',
 		description: 'Your connection has been deleted.',
 	})
-	return json({ status: 'success' } as const, { headers: toastHeaders })
+	return data({ status: 'success' } as const, { headers: toastHeaders })
 }
 
 export default function Connections() {

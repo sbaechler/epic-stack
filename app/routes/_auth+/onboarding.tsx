@@ -1,18 +1,14 @@
 import { getFormProps, getInputProps, useForm } from '@conform-to/react'
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import {
-	json,
 	redirect,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
+	data,
 	type MetaFunction,
-} from '@remix-run/node'
-import {
 	Form,
 	useActionData,
 	useLoaderData,
 	useSearchParams,
-} from '@remix-run/react'
+} from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { z } from 'zod'
@@ -31,6 +27,7 @@ import {
 	UsernameSchema,
 } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
+import { type Route } from './+types/onboarding.ts'
 
 export const onboardingEmailSessionKey = 'onboardingEmail'
 
@@ -59,12 +56,12 @@ async function requireOnboardingEmail(request: Request) {
 	return email
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	const email = await requireOnboardingEmail(request)
-	return json({ email })
+	return { email }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const email = await requireOnboardingEmail(request)
 	const formData = await request.formData()
 	checkHoneypot(formData)
@@ -93,7 +90,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	})
 
 	if (submission.status !== 'success' || !submission.value.session) {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)

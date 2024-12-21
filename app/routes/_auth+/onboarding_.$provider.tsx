@@ -7,18 +7,14 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import {
 	redirect,
-	json,
-	type ActionFunctionArgs,
-	type LoaderFunctionArgs,
+	data,
 	type MetaFunction,
-} from '@remix-run/node'
-import {
 	type Params,
 	Form,
 	useActionData,
 	useLoaderData,
 	useSearchParams,
-} from '@remix-run/react'
+} from 'react-router'
 import { safeRedirect } from 'remix-utils/safe-redirect'
 import { z } from 'zod'
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx'
@@ -38,6 +34,7 @@ import { authSessionStorage } from '#app/utils/session.server.ts'
 import { redirectWithToast } from '#app/utils/toast.server.ts'
 import { NameSchema, UsernameSchema } from '#app/utils/user-validation.ts'
 import { verifySessionStorage } from '#app/utils/verification.server.ts'
+import { type Route } from './+types/onboarding_.$provider.tsx'
 import { onboardingEmailSessionKey } from './onboarding'
 
 export const providerIdKey = 'providerId'
@@ -82,7 +79,7 @@ async function requireData({
 	}
 }
 
-export async function loader({ request, params }: LoaderFunctionArgs) {
+export async function loader({ request, params }: Route.LoaderArgs) {
 	const { email } = await requireData({ request, params })
 	const connectionSession = await connectionSessionStorage.getSession(
 		request.headers.get('cookie'),
@@ -95,7 +92,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 	const formError = connectionSession.get(authenticator.sessionErrorKey)
 	const hasError = typeof formError === 'string'
 
-	return json({
+	return {
 		email,
 		status: 'idle',
 		submission: {
@@ -103,10 +100,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 			initialValue: prefilledProfile ?? {},
 			error: { '': hasError ? [formError] : [] },
 		} as SubmissionResult,
-	})
+	}
 }
 
-export async function action({ request, params }: ActionFunctionArgs) {
+export async function action({ request, params }: Route.ActionArgs) {
 	const { email, providerId, providerName } = await requireData({
 		request,
 		params,
@@ -143,7 +140,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 	})
 
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)

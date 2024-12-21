@@ -3,12 +3,13 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import * as E from '@react-email/components'
 import {
-	json,
 	redirect,
-	type ActionFunctionArgs,
 	type MetaFunction,
-} from '@remix-run/node'
-import { Form, useActionData, useSearchParams } from '@remix-run/react'
+	Form,
+	useActionData,
+	useSearchParams,
+	data,
+} from 'react-router'
 import { HoneypotInputs } from 'remix-utils/honeypot/react'
 import { z } from 'zod'
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx'
@@ -23,6 +24,7 @@ import { sendEmail } from '#app/utils/email.server.ts'
 import { checkHoneypot } from '#app/utils/honeypot.server.ts'
 import { useIsPending } from '#app/utils/misc.tsx'
 import { EmailSchema } from '#app/utils/user-validation.ts'
+import { type Route } from './+types/signup.ts'
 import { prepareVerification } from './verify.server.ts'
 
 export const handle: SEOHandle = {
@@ -33,7 +35,7 @@ const SignupSchema = z.object({
 	email: EmailSchema,
 })
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 
 	checkHoneypot(formData)
@@ -56,7 +58,7 @@ export async function action({ request }: ActionFunctionArgs) {
 		async: true,
 	})
 	if (submission.status !== 'success') {
-		return json(
+		return data(
 			{ result: submission.reply() },
 			{ status: submission.status === 'error' ? 400 : 200 },
 		)
@@ -78,7 +80,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	if (response.status === 'success') {
 		return redirect(redirectTo.toString())
 	} else {
-		return json(
+		return data(
 			{
 				result: submission.reply({ formErrors: [response.error.message] }),
 			},

@@ -1,19 +1,14 @@
 import { invariantResponse } from '@epic-web/invariant'
 import { type SEOHandle } from '@nasa-gcn/remix-seo'
 import {
-	json,
 	redirect,
-	type LoaderFunctionArgs,
-	type ActionFunctionArgs,
-} from '@remix-run/node'
-import {
 	Form,
 	Link,
 	useFetcher,
 	useLoaderData,
 	useSearchParams,
 	useSubmit,
-} from '@remix-run/react'
+} from 'react-router'
 import { GeneralErrorBoundary } from '#app/components/error-boundary'
 import { Field } from '#app/components/forms.tsx'
 import { Spacer } from '#app/components/spacer.tsx'
@@ -31,12 +26,13 @@ import {
 } from '#app/utils/litefs.server.ts'
 import { useDebounce, useDoubleCheck } from '#app/utils/misc.tsx'
 import { requireUserWithRole } from '#app/utils/permissions.server.ts'
+import { type Route } from './+types/cache.ts'
 
 export const handle: SEOHandle = {
 	getSitemapEntries: () => null,
 }
 
-export async function loader({ request }: LoaderFunctionArgs) {
+export async function loader({ request }: Route.LoaderArgs) {
 	await requireUserWithRole(request, 'admin')
 	const searchParams = new URL(request.url).searchParams
 	const query = searchParams.get('query')
@@ -58,10 +54,10 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	} else {
 		cacheKeys = await getAllCacheKeys(limit)
 	}
-	return json({ cacheKeys, instance, instances, currentInstanceInfo })
+	return { cacheKeys, instance, instances, currentInstanceInfo }
 }
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	await requireUserWithRole(request, 'admin')
 	const formData = await request.formData()
 	const key = formData.get('cacheKey')
@@ -87,7 +83,7 @@ export async function action({ request }: ActionFunctionArgs) {
 			throw new Error(`Unknown cache type: ${type}`)
 		}
 	}
-	return json({ success: true })
+	return { success: true }
 }
 
 export default function CacheAdminRoute() {
@@ -99,7 +95,7 @@ export default function CacheAdminRoute() {
 	const instance = searchParams.get('instance') ?? data.instance
 
 	const handleFormChange = useDebounce((form: HTMLFormElement) => {
-		submit(form)
+		void submit(form)
 	}, 400)
 
 	return (
@@ -150,7 +146,11 @@ export default function CacheAdminRoute() {
 							placeholder: 'results limit',
 						}}
 					/>
-					<select name="instance" defaultValue={instance}>
+					<select
+						name="instance"
+						defaultValue={instance}
+						title="Select instance"
+					>
 						{Object.entries(data.instances).map(([inst, region]) => (
 							<option key={inst} value={inst}>
 								{[

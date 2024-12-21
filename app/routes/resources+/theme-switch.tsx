@@ -1,8 +1,7 @@
 import { useForm, getFormProps } from '@conform-to/react'
 import { parseWithZod } from '@conform-to/zod'
 import { invariantResponse } from '@epic-web/invariant'
-import { json, type ActionFunctionArgs } from '@remix-run/node'
-import { redirect, useFetcher, useFetchers } from '@remix-run/react'
+import { redirect, useFetcher, useFetchers, data } from 'react-router'
 import { ServerOnly } from 'remix-utils/server-only'
 import { z } from 'zod'
 import { Icon } from '#app/components/ui/icon.tsx'
@@ -12,6 +11,7 @@ import {
 	useRequestInfo,
 } from '#app/utils/request-info.ts'
 import { type Theme, setTheme } from '#app/utils/theme.server.ts'
+import { type Route } from './+types/theme-switch.ts'
 
 const ThemeFormSchema = z.object({
 	theme: z.enum(['system', 'light', 'dark']),
@@ -19,7 +19,7 @@ const ThemeFormSchema = z.object({
 	redirectTo: z.string().optional(),
 })
 
-export async function action({ request }: ActionFunctionArgs) {
+export async function action({ request }: Route.ActionArgs) {
 	const formData = await request.formData()
 	const submission = parseWithZod(formData, {
 		schema: ThemeFormSchema,
@@ -35,7 +35,7 @@ export async function action({ request }: ActionFunctionArgs) {
 	if (redirectTo) {
 		return redirect(redirectTo, responseInit)
 	} else {
-		return json({ result: submission.reply() }, responseInit)
+		return data({ result: submission.reply() }, responseInit)
 	}
 }
 

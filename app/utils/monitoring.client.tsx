@@ -1,11 +1,9 @@
-import { useLocation, useMatches } from '@remix-run/react'
 import {
 	init as sentryInit,
 	browserTracingIntegration,
 	replayIntegration,
 	browserProfilingIntegration,
-} from '@sentry/remix'
-import { useEffect } from 'react'
+} from '@sentry/react'
 
 export function init() {
 	sentryInit({
@@ -25,11 +23,7 @@ export function init() {
 			return event
 		},
 		integrations: [
-			browserTracingIntegration({
-				useEffect,
-				useLocation,
-				useMatches,
-			}),
+			browserTracingIntegration(),
 			replayIntegration(),
 			browserProfilingIntegration(),
 		],

@@ -1,5 +1,5 @@
-import { Form, useSearchParams, useSubmit } from '@remix-run/react'
 import { useId } from 'react'
+import { Form, useSearchParams, useSubmit } from 'react-router'
 import { useDebounce, useIsPending } from '#app/utils/misc.tsx'
 import { Icon } from './ui/icon.tsx'
 import { Input } from './ui/input.tsx'
@@ -24,7 +24,7 @@ export function SearchBar({
 	})
 
 	const handleFormChange = useDebounce((form: HTMLFormElement) => {
-		submit(form)
+		void submit(form)
 	}, 400)
 
 	return (
